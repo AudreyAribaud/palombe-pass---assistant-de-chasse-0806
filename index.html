@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#2b4226">
+  <meta name="description" content="Application complète pour la chasse et l'observation de la palombe : appeaux audio, suivi des vols et météo.">
+  <title>Palombe Pass</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-title">
+      <span class="icon">🐦</span>
+      <h1>Palombe Pass</h1>
+    </div>
+    <div class="header-status">
+      <span id="netStatus" class="badge online">En ligne</span>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <!-- Onglet 1: Appeaux Audio -->
+    <section id="tab-appeaux" class="tab-content active">
+      <div class="card-header">
+        <h2>Appeaux & Roucoulements</h2>
+        <p>Simulateur acoustique haute fidélité pour le rappel</p>
+      </div>
+      
+      <div class="audio-controls-panel">
+        <div class="volume-container">
+          <label for="volumeControl">🔊 Volume Général</label>
+          <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="0.8">
+        </div>
+      </div>
+
+      <div class="sound-grid">
+        <div class="sound-card" onclick="app.playCall('pose')">
+          <div class="sound-icon">🍃</div>
+          <h3>Roucoulement de Posé</h3>
+          <p>Chant doux et rassurant à 5 syllabes</p>
+          <button class="btn-play">Jouer 🔊</button>
+        </div>
+
+        <div class="sound-card" onclick="app.playCall('vol')">
+          <div class="sound-icon">🦅</div>
+          <h3>Rappel de Passage</h3>
+          <p>Roucoulement insistant pour vol en transit</p>
+          <button class="btn-play">Jouer 🔊</button>
+        </div>
+
+        <div class="sound-card" onclick="app.playCall('seduction')">
+          <div class="sound-icon">❤️</div>
+          <h3>Roucoulement Amoureux</h3>
+          <p>Tonalité grave pour travail de cabane</p>
+          <button class="btn-play">Jouer 🔊</button>
+        </div>
+
+        <div class="sound-card" onclick="app.playCall('ailes')">
+          <div class="sound-icon">💨</div>
+          <h3>Claquement d'Ailes</h3>
+          <p>Simulation du battement d'envol/pose</p>
+          <button class="btn-play">Jouer 🔊</button>
+        </div>
+      </div>
+
+      <div class="card stop-card">
+        <button class="btn-danger" onclick="app.stopAllAudio()">⏹️ Arrêter tous les sons</button>
+      </div>
+    </section>
+
+    <!-- Onglet 2: Suivi des Vols -->
+    <section id="tab-vols" class="tab-content">
+      <div class="card-header">
+        <h2>Carnet d'Observation de Vol</h2>
+        <p>Enregistrez instantanément les passages de palombes</p>
+      </div>
+
+      <form id="flightForm" class="card form-card">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="birdCount">Nombre estimé</label>
+            <input type="number" id="birdCount" min="1" placeholder="ex: 45" required>
+          </div>
+          <div class="form-group">
+            <label for="flightDir">Direction</label>
+            <select id="flightDir" required>
+              <option value="N">Nord (N)</option>
+              <option value="NE">Nord-Est (NE)</option>
+              <option value="E">Est (E)</option>
+              <option value="SE">Sud-Est (SE)</option>
+              <option value="S" selected>Sud (S)</option>
+              <option value="SO">Sud-Ouest (SO)</option>
+              <option value="O">Ouest (O)</option>
+              <option value="NO">Nord-Ouest (NO)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="flightAttitude">Comportement</label>
+            <select id="flightAttitude">
+              <option value="Passe haut">Passe haut (Migrateur)</option>
+              <option value="Passe bas">Passe bas</option>
+              <option value="Répond à l'appeau">Répond à l'appeau</option>
+              <option value="Posé aux arbres">Posé aux arbres</option>
+              <option value="Refus">Refus / Décrochage</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary">➕ Enregistrer le passage</button>
+      </form>
+
+      <div class="card">
+        <h3>Vols enregistrés aujourd'hui (<span id="totalTodayCount">0</span> palombes)</h3>
+        <ul id="flightList" class="flight-list">
+          <!-- Liste dynamique -->
+        </ul>
+        <button class="btn-secondary" onclick="app.clearLogs()">Réinitialiser la journée</button>
+      </div>
+    </section>
+
+    <!-- Onglet 3: Météo & Vent -->
+    <section id="tab-meteo" class="tab-content">
+      <div class="card-header">
+        <h2>Conditions Météo & Solunaire</h2>
+        <p>Facteurs clés pour la migration dans votre palombière</p>
+      </div>
+
+      <div class="card meteo-card">
+        <div class="compass-container">
+          <div class="compass-arrow" id="compassArrow">⬆️</div>
+          <div class="compass-text" id="windDirText">Vent: Nord-Est (15 km/h)</div>
+        </div>
+        <div class="meteo-grid">
+          <div class="meteo-item">
+            <span class="label">Température</span>
+            <span class="value" id="valTemp">11°C</span>
+          </div>
+          <div class="meteo-item">
+            <span class="label">Pression</span>
+            <span class="value" id="valPress">1022 hPa 📈</span>
+          </div>
+          <div class="meteo-item">
+            <span class="label">Brouillard / Ciel</span>
+            <span class="value" id="valSky">Dégagé</span>
+          </div>
+          <div class="meteo-item">
+            <span class="label">Indice de Passage</span>
+            <span class="value badge-success" id="valIndex">Très Favorable</span>
+          </div>
+        </div>
+        <button class="btn-secondary" onclick="app.refreshMeteo()">🔄 Actualiser la météo (Simulé/GPS)</button>
+      </div>
+
+      <div class="card">
+        <h3>Conseil de Chasse du Jour</h3>
+        <p id="huntingTip">Vent du Nord-Est avec pression en hausse. Conditions optimales pour le grand passage du matin entre 8h30 et 11h30.</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Navigation par onglets en bas -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="app.switchTab('tab-appeaux', this)">
+      <span class="nav-icon">📢</span>
+      <span class="nav-label">Appeaux</span>
+    </button>
+    <button class="nav-item" onclick="app.switchTab('tab-vols', this)">
+      <span class="nav-icon">📝</span>
+      <span class="nav-label">Vols</span>
+    </button>
+    <button class="nav-item" onclick="app.switchTab('tab-meteo', this)">
+      <span class="nav-icon">🧭</span>
+      <span class="nav-label">Météo</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

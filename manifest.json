@@ -1,0 +1,16 @@
+{
+  "name": "Palombe Pass - Assistant de Chasse",
+  "short_name": "PalombeApp",
+  "description": "Application PWA d'appeaux, suivi des vols de palombes et météo de chasse.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a2618",
+  "theme_color": "#2b4226",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐦</text></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
